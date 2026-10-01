@@ -28,6 +28,16 @@ public class ImagePresenter {
         repaint();
     }
 
+    public void next() {
+        image = image.next();
+        repaint();
+    }
+
+    public void prev() {
+        image = image.prev();
+        repaint();
+    }
+
     public void show(Image image) {
         this.image = image;
         repaint();

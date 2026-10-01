@@ -9,6 +9,8 @@ public class Main {
         MainFrame frame = new MainFrame();
         ImagePresenter presenter = new ImagePresenter(frame.getImageDisplay());
         presenter.show(image());
+        frame.onPrev(presenter::prev);
+        frame.onNext(presenter::next);
         frame.setVisible(true);
     }
 
