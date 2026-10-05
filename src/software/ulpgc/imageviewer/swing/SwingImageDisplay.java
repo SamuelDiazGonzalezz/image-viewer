@@ -6,6 +6,10 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.util.HashMap;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -15,6 +19,7 @@ public class SwingImageDisplay extends JPanel implements ImageDisplay {
     private Released released = Released.Null;
     private int initShift;
     private final List<Paint> paints = new ArrayList<>();
+    private final Map<String, BufferedImage> cache = new HashMap<>();
 
     public SwingImageDisplay() {
         MouseAdapter adapter = mouseAdapter();
@@ -65,9 +70,31 @@ public class SwingImageDisplay extends JPanel implements ImageDisplay {
         g.setColor(Color.BLACK);
         g.fillRect(0, 0, getWidth(), getHeight());
         for (Paint paint : paints) {
-            g.setColor(colors.getOrDefault(paint.id, Color.GRAY));
-            g.fillRect(paint.offset, 0, getWidth(), getHeight());
+            BufferedImage image = load(paint.id);
+            if (image != null) drawFitted(g, image, paint.offset);
+            else {
+                g.setColor(colors.getOrDefault(paint.id, Color.GRAY));
+                g.fillRect(paint.offset, 0, getWidth(), getHeight());
+            }
         }
+    }
+
+    private BufferedImage load(String id) {
+        if (colors.containsKey(id)) return null;
+        return cache.computeIfAbsent(id, key -> {
+            try {
+                return javax.imageio.ImageIO.read(new File(key));
+            } catch (IOException e) {
+                return null;
+            }
+        });
+    }
+
+    private void drawFitted(Graphics g, BufferedImage image, int offset) {
+        double scale = Math.min((double) getWidth() / image.getWidth(), (double) getHeight() / image.getHeight());
+        int w = (int) (image.getWidth() * scale);
+        int h = (int) (image.getHeight() * scale);
+        g.drawImage(image, offset + (getWidth() - w) / 2, (getHeight() - h) / 2, w, h, null);
     }
 
     @Override
