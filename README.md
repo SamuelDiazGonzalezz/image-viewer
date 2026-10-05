@@ -2,7 +2,7 @@
 
 ## Descripción
 
-Image Viewer es un visor de imágenes sencillo hecho en Java con Swing. Por ahora no carga imágenes reales, sino que usa un `MockImageLoader` que genera una lista circular de "imágenes" representadas por colores (rojo, verde, azul, amarillo y naranja).
+Image Viewer es un visor de imágenes sencillo hecho en Java con Swing. Arranca con una lista circular de "imágenes" de prueba representadas por colores (rojo, verde, azul, amarillo y naranja), y permite añadir imágenes reales desde el ordenador con el botón **Añadir**.
 
 Se puede pasar de una imagen a otra arrastrando con el ratón hacia la izquierda o hacia la derecha. Mientras arrastras se ve cómo entra la imagen siguiente o la anterior, y al soltar el ratón, si has arrastrado más de la mitad del ancho de la ventana, se cambia de imagen. Si no, vuelve a la imagen que estaba.
 
@@ -21,6 +21,8 @@ El proyecto sigue el patrón Modelo-Vista-Presentador (MVP):
 - **Color por defecto**: se usa `getOrDefault` en el mapa de colores para que, si llega un id que no existe, se pinte en gris en vez de dar un `NullPointerException`.
 - **Más imágenes de prueba**: se han añadido "yellow" y "orange" al `MockImageLoader` y al mapa de colores.
 - **Botones de navegación**: se ha añadido una barra abajo en `MainFrame` con los botones `<` y `>` para ir a la imagen anterior y a la siguiente sin tener que arrastrar. Para esto se añadieron los métodos `next()` y `prev()` en `ImagePresenter`, y `onPrev()` / `onNext()` en `MainFrame`.
+- **Botón Añadir**: la barra inferior tiene un botón `Añadir` que abre un selector de archivos (multiselección, formatos png, jpg, jpeg, gif y bmp). Las imágenes elegidas se añaden a la lista circular y se muestra la primera de las nuevas. Para esto se creó la clase `ImageList` (lista mutable de imágenes) y el método `onAdd()` en `MainFrame`.
+- **Imágenes reales**: `SwingImageDisplay` carga el archivo con `ImageIO` (con caché) y lo dibuja ajustado y centrado en el panel. Si el id es un color de prueba, pinta el color como antes.
 - **Atributo `final`**: la lista `paints` ahora es `final` porque nunca se reasigna.
 
 ## Cómo ejecutarlo
